@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require "rake"
+require "optparse"
+
+options = {
+  :confman => "/Users/brett/edmodo/confman-free-bsd/trunk"
+}
+
+OptionParser.new do |opts|
+  opts.on("-c", "--confman CONFMAN_PATH", "Path to confman") do |c|
+    options[:confman] = c
+  end
+end.parse!
+
+GOPATH   = ENV["GOPATH"]
+APP_ROOT = File.join(GOPATH, "/src/github.com/edmodo/planner")
+
+sh "go run #{APP_ROOT}/server.go --service_addr=0.0.0.0:35020 --db_config=#{options[:confman]}/staging-oneapi-planner/usr/local/etc/one-api/planner/database.yml --secrets_config=#{options[:confman]}/staging-oneapi-planner/usr/local/etc/one-api/planner/secrets.json --service_config=#{options[:confman]}/staging-oneapi-planner/usr/local/etc/one-api/planner/services.yml --log_config=#{APP_ROOT}/config/debug_logging.xml --log_db --environment=staging --badges_config=#{options[:confman]}/staging-oneapi-planner/usr/local/etc/one-api/planner/badges.yml"

@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require "rake"
+require "optparse"
+
+options = {
+  :confman => "/Users/brett/edmodo/confman-free-bsd/trunk"
+}
+
+OptionParser.new do |opts|
+  opts.on("-c", "--confman CONFMAN_PATH", "Path to confman") do |c|
+    options[:confman] = c
+  end
+end.parse!
+
+GOPATH   = ENV["GOPATH"]
+APP_ROOT = File.join(GOPATH, "/src/github.com/edmodo")
+
+begin
+  sh "killservices 2> /dev/null"
+rescue
+end
+
+sh "staging_auth --confman #{options[:confman]} 1> #{APP_ROOT}/auth/stdout.log 2> #{APP_ROOT}/auth/stderr.log &"
+sh "staging_planner --confman #{options[:confman]} 1> #{APP_ROOT}/planner/stdout.log 2> #{APP_ROOT}/planner/stderr.log &"

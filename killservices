@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for process in '[3]6010' '[3]6020' '[3]6050' '[3]5010' '[3]5020' '[3]5050' '[3]5110' '[3]6110'
+do
+  kill $(ps aux | grep $process | awk '{print $2}')
+done

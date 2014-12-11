@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require "rake"
+require "optparse"
+
+options = {
+  :confman => "/Users/brett/edmodo/confman-free-bsd/trunk"
+}
+
+OptionParser.new do |opts|
+  opts.on("-c", "--confman CONFMAN_PATH", "Path to confman") do |c|
+    options[:confman] = c
+  end
+end.parse!
+
+GOPATH   = ENV["GOPATH"]
+APP_ROOT = File.join(GOPATH, "/src/github.com/edmodo/auth")
+
+sh "go run #{APP_ROOT}/server.go --service_addr=0.0.0.0:35010 --http_addr=0.0.0.0:35011 --environment=staging --log_config=#{APP_ROOT}/config/debug_logging.xml --log_db --db_config=#{options[:confman]}/staging-oneapi-auth/usr/local/etc/one-api/auth/database.yml --secrets_config=#{options[:confman]}/staging-oneapi-auth/usr/local/etc/one-api/auth/secrets.json --server_config=#{options[:confman]}/staging-oneapi-auth/usr/local/etc/one-api/auth/server.yml --service_config=#{options[:confman]}/staging-oneapi-auth/usr/local/etc/one-api/auth/services.yml --badges_config=#{options[:confman]}/staging-oneapi-auth/usr/local/etc/one-api/auth/badges.yml"
